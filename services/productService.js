@@ -1,4 +1,5 @@
-const Joi = require('joi');
+const { bodySchema } = require('../schemas/schemas');
+const { createMessage } = require('../utils/functions');
 const {
   findProductModel,
   createProductModel,
@@ -7,18 +8,6 @@ const {
   productUpdateModel,
   deleteProductModel,
 } = require('../models/productModel');
-
-const bodySchema = Joi.object({
-  name: Joi.string().min(5).required().messages({
-    'string.min': '"name" length must be at least 5 characters long',
-  }),
-  quantity: Joi.number().greater(0).required().messages({
-    'number.greater': '"quantity" must be larger than or equal to 1',
-    'number.base': '"quantity" must be a number',
-  }),
-});
-
-const createMessage = (message) => ({ code: 'invalid_data', message });
 
 const productCreateService = async (bodyProduct) => {
   const { error } = bodySchema.validate(bodyProduct);

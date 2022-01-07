@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const errorHandler = require('./middlewares/errorHandler');
 const routeProduct = require('./routes/productsRoute');
+const salesRoute = require('./routes/salesRoute');
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,8 @@ app.get('/', (_request, response) => {
 });
 
 app.use('/products', routeProduct);
+
+app.use('/sales', salesRoute);
 
 app.use(errorHandler);
 
