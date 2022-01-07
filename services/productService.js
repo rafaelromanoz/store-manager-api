@@ -1,5 +1,9 @@
 const Joi = require('joi');
-const { findProductModel, createProductModel } = require('../models/productModel');
+const {
+  findProductModel,
+  createProductModel,
+  getProductByIdModel,
+  getAllProductsModel } = require('../models/productModel');
 
 const bodySchema = Joi.object({
   name: Joi.string().min(5).required().messages({
@@ -26,6 +30,23 @@ const productCreateService = async (bodyProduct) => {
   };
 };
 
+const getProductByIdService = async (id) => {
+  /** Source:  https://stackoverflow.com/questions/30051236/argument-passed-in-must-be-a-string-of-24-hex-characters-i-think-it-is */
+  const validateHex = /[0-9A-Fa-f]{6}/g;
+  if (!validateHex.test(id)) throw createMessage('Wrong id format');
+  const product = await getProductByIdModel(id);
+  return product;
+};
+
+const getAllProductsService = async () => {
+  const products = await getAllProductsModel();
+  return {
+    products: [...products],
+  };
+};
+
 module.exports = {
   productCreateService,
+  getProductByIdService,
+  getAllProductsService,
 };

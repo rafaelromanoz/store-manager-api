@@ -1,7 +1,15 @@
 const express = require('express');
-const { productCreateController } = require('../controllers/productController');
+const {
+  productCreateController,
+  getProductByIdController,
+  getAllProductsController,
+} = require('../controllers/productController');
 
 const routeProduct = express.Router();
+
+routeProduct.get('/:id', getProductByIdController);
+
+routeProduct.get('/', getAllProductsController);
 
 routeProduct.post('/', productCreateController);
 

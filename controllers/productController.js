@@ -1,4 +1,7 @@
-const { productCreateService } = require('../services/productService');
+const {
+  productCreateService,
+  getProductByIdService,
+  getAllProductsService } = require('../services/productService');
 
 const productCreateController = async (req, res, next) => {
   try {
@@ -10,6 +13,29 @@ const productCreateController = async (req, res, next) => {
   }
 };
 
+const getProductByIdController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const product = await getProductByIdService(id);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.error(error.message);
+    next(error);
+  }
+};
+
+const getAllProductsController = async (req, res, next) => {
+  try {
+    const allProducts = await getAllProductsService();
+  return res.status(200).json(allProducts);
+  } catch (error) {
+    console.error(error.message);
+    next(error);
+  }
+};
+
 module.exports = {
   productCreateController,
+  getProductByIdController,
+  getAllProductsController,
 };
