@@ -19,6 +19,13 @@ const getProductByIdModel = async (id) => {
   return product;
 };
 
+const productUpdateModel = async (id, { name, quantity }) => {
+  const conn = await connection();
+  await conn.collection('products').updateOne({ _id: ObjectId(id) }, {
+    $set: { name, quantity },
+  });
+};
+
 const getAllProductsModel = async () => {
   const conn = await connection();
   const allProducts = await conn.collection('products').find({}).toArray();
@@ -30,4 +37,5 @@ module.exports = {
   findProductModel,
   getProductByIdModel,
   getAllProductsModel,
+  productUpdateModel,
 };

@@ -1,14 +1,16 @@
 const {
   productCreateService,
   getProductByIdService,
-  getAllProductsService } = require('../services/productService');
+  getAllProductsService,
+  productUpdateService,
+} = require('../services/productService');
 
 const productCreateController = async (req, res, next) => {
   try {
     const product = await productCreateService(req.body);
     return res.status(201).json(product);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     next(error);
   }
 };
@@ -19,7 +21,7 @@ const getProductByIdController = async (req, res, next) => {
     const product = await getProductByIdService(id);
     return res.status(200).json(product);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     next(error);
   }
 };
@@ -29,7 +31,18 @@ const getAllProductsController = async (req, res, next) => {
     const allProducts = await getAllProductsService();
   return res.status(200).json(allProducts);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
+    next(error);
+  }
+};
+
+const productUpdateController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const productUpdated = await productUpdateService(id, req.body);
+    return res.status(200).json(productUpdated);
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 };
@@ -38,4 +51,5 @@ module.exports = {
   productCreateController,
   getProductByIdController,
   getAllProductsController,
+  productUpdateController,
 };

@@ -3,15 +3,17 @@ const {
   findProductModel,
   createProductModel,
   getProductByIdModel,
-  getAllProductsModel } = require('../models/productModel');
+  getAllProductsModel,
+  productUpdateModel,
+} = require('../models/productModel');
 
 const bodySchema = Joi.object({
   name: Joi.string().min(5).required().messages({
     'string.min': '"name" length must be at least 5 characters long',
-
   }),
   quantity: Joi.number().greater(0).required().messages({
     'number.greater': '"quantity" must be larger than or equal to 1',
+    'number.base': '"quantity" must be a number',
   }),
 });
 
@@ -45,8 +47,21 @@ const getAllProductsService = async () => {
   };
 };
 
+const productUpdateService = async (idController, bodyProduct) => {
+  const { error } = bodySchema.validate(bodyProduct);
+  if (error) throw createMessage(error.message);
+  await productUpdateModel(idController, bodyProduct);
+
+  return {
+    _id: idController,
+    name: bodyProduct.name,
+    quantity: bodyProduct.quantity,
+  };
+};
+
 module.exports = {
   productCreateService,
   getProductByIdService,
   getAllProductsService,
+  productUpdateService,
 };
