@@ -5,6 +5,7 @@ const {
   getProductByIdModel,
   getAllProductsModel,
   productUpdateModel,
+  deleteProductModel,
 } = require('../models/productModel');
 
 const bodySchema = Joi.object({
@@ -59,9 +60,19 @@ const productUpdateService = async (idController, bodyProduct) => {
   };
 };
 
+const productDeleteService = async (id) => {
+  /** Source:  https://stackoverflow.com/questions/30051236/argument-passed-in-must-be-a-string-of-24-hex-characters-i-think-it-is */
+  const validateHex = /[0-9A-Fa-f]{6}/g;
+  if (!validateHex.test(id)) throw createMessage('Wrong id format');
+  const product = await getProductByIdModel(id);
+  await deleteProductModel(id);
+  return product;
+};
+
 module.exports = {
   productCreateService,
   getProductByIdService,
   getAllProductsService,
   productUpdateService,
+  productDeleteService,
 };

@@ -32,10 +32,16 @@ const getAllProductsModel = async () => {
   return allProducts;
 };
 
+const deleteProductModel = async (id) => {
+  const conn = await connection();
+  await conn.collection('products').deleteOne({ _id: ObjectId(id) });
+};
+
 module.exports = {
   createProductModel,
   findProductModel,
   getProductByIdModel,
   getAllProductsModel,
   productUpdateModel,
+  deleteProductModel,
 };
