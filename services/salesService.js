@@ -1,5 +1,5 @@
 const { getProductByIdModel } = require('../models/productModel');
-const { createSaleModel } = require('../models/salesModel');
+const { createSaleModel, findSaleByIdModel, listAllSalesModel } = require('../models/salesModel');
 const { createMessage } = require('../utils/functions');
 
 const createSaleService = async (bodySale) => {
@@ -18,6 +18,35 @@ const createSaleService = async (bodySale) => {
   };
 };
 
+const listSaleServiceById = async (id) => {
+  const error = {
+    notfound: true,
+    code: 'not_found',
+    message: 'Sale not found',
+  };
+  const validateHex = /[0-9A-Fa-f]{6}/g;
+  if (!validateHex.test(id)) throw error;
+  const sale = await findSaleByIdModel(id);
+  if (!sale) throw error;
+  return {
+    _id: sale.id,
+    itensSold: [
+      ...sale.itensSold,
+    ],
+  };
+};
+
+const listAllSalesService = async () => {
+  const allSales = await listAllSalesModel();
+  return {
+    sales: [
+      ...allSales,
+    ],
+  };
+};
+
 module.exports = {
   createSaleService,
+  listSaleServiceById,
+  listAllSalesService,
 };
