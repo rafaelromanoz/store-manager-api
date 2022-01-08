@@ -68,7 +68,6 @@ const deleteSaleService = async (id) => {
     throw createMessage('Wrong sale ID format');
   }
   const product = await findSaleByIdModel(id);
-  console.log(product);
   await deleteSaleModel(id);
   return product;
 };
