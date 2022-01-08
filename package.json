@@ -30,8 +30,8 @@
     "frisby": "^2.1.2",
     "jest": "^26.4.1",
     "joi": "^17.5.0",
-    "mongodb": "^3.5.9",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "mongodb": "^3.5.9"
   },
   "devDependencies": {
     "chai": "^4.3.4",

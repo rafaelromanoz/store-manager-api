@@ -2,6 +2,7 @@ const { createSaleService,
   listSaleServiceById,
   listAllSalesService,
   updateSalesService,
+  deleteSaleService,
 } = require('../services/salesService');
 
 const createSaleController = async (req, res, next) => {
@@ -46,9 +47,21 @@ const updateSalesController = async (req, res, next) => {
   }
 };
 
+const deleteSaleController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deletedSaleService = await deleteSaleService(id);
+    return res.status(200).json(deletedSaleService);
+  } catch (error) {
+    console.error(error.message);
+    next(error);
+  }
+};
+
 module.exports = {
   createSaleController,
   listSaleControllerById,
   listAllSalesController,
   updateSalesController,
+  deleteSaleController,
 };

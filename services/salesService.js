@@ -1,6 +1,6 @@
 const { getProductByIdModel } = require('../models/productModel');
 const { createSaleModel, findSaleByIdModel,
-  listAllSalesModel, updateSalesModel } = require('../models/salesModel');
+  listAllSalesModel, updateSalesModel, deleteSaleModel } = require('../models/salesModel');
 const { createMessage } = require('../utils/functions');
 
 const createSaleService = async (bodySale) => {
@@ -62,9 +62,21 @@ const updateSalesService = async (id, reqBody) => {
   };
 };
 
+const deleteSaleService = async (id) => {
+  const validateHex = /[0-9A-Fa-f]{6}/g;
+  if (!validateHex.test(id)) {
+    throw createMessage('Wrong sale ID format');
+  }
+  const product = await findSaleByIdModel(id);
+  console.log(product);
+  await deleteSaleModel(id);
+  return product;
+};
+
 module.exports = {
   createSaleService,
   listSaleServiceById,
   listAllSalesService,
   updateSalesService,
+  deleteSaleService,
 };
