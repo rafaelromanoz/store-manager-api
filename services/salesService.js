@@ -1,5 +1,6 @@
 const { getProductByIdModel } = require('../models/productModel');
-const { createSaleModel, findSaleByIdModel, listAllSalesModel } = require('../models/salesModel');
+const { createSaleModel, findSaleByIdModel,
+  listAllSalesModel, updateSalesModel } = require('../models/salesModel');
 const { createMessage } = require('../utils/functions');
 
 const createSaleService = async (bodySale) => {
@@ -45,8 +46,25 @@ const listAllSalesService = async () => {
   };
 };
 
+const updateSalesService = async (id, reqBody) => {
+  const product = await getProductByIdModel(reqBody[0].productId);
+  const validateHex = /[0-9A-Fa-f]{6}/g;
+  if (!validateHex.test(reqBody[0].productId)
+  || typeof reqBody[0].quantity !== 'number'
+  || reqBody[0].quantity <= 0) throw createMessage('Wrong product ID or invalid quantity');
+  if (!product) throw createMessage('Wrong product ID or invalid quantity');
+  await updateSalesModel(id, reqBody);
+  return {
+    _id: id,
+    itensSold: [
+      ...reqBody,
+    ],
+  };
+};
+
 module.exports = {
   createSaleService,
   listSaleServiceById,
   listAllSalesService,
+  updateSalesService,
 };

@@ -20,8 +20,16 @@ const listAllSalesModel = async () => {
   return sales;
 };
 
+const updateSalesModel = async (id, reqBody) => {
+  const conn = await connection();
+  await conn.collection('sales').updateOne({ _id: ObjectId(id) }, {
+    $set: { itensSold: reqBody },
+  });
+};
+
 module.exports = {
   createSaleModel,
   findSaleByIdModel,
   listAllSalesModel,
+  updateSalesModel,
 };
