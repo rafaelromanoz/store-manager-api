@@ -5,18 +5,34 @@ const { createSaleModel,
   updateSalesModel,
   deleteSaleModel,
   getManySalesByIds } = require('../models/salesModel');
+const { getProductByIdModel } = require('../models/productModel');
 const { createMessage, createListOfObjectId } = require('../utils/functions');
 
-const createSaleService = async (bodySale) => {
+const errorCreate = {
+  notfound: true,
+  code: 'stock_problem',
+  message: 'Such amount is not permitted to sell',
+};
+
+const isValid = (array) => {
   if (
-    bodySale.some(({ productId }) => !ObjectId.isValid(productId))
-  || bodySale.some(({ quantity }) => typeof quantity !== 'number')
-  || bodySale.some(({ quantity }) => quantity <= 0)) {
-    throw createMessage('Wrong product ID or invalid quantity');
-  }
+    array.some(({ productId }) => !ObjectId.isValid(productId))
+    || array.some(({ quantity }) => typeof quantity !== 'number')
+    || array.some(({ quantity }) => quantity <= 0)) {
+      throw createMessage('Wrong product ID or invalid quantity');
+    }
+};
+
+const createSaleService = async (bodySale) => {
+  isValid(bodySale);
+    const { quantity } = await getProductByIdModel(bodySale[0].productId);
+    if (quantity - bodySale[0].quantity < 0) {
+      throw errorCreate;
+    }
   const idObjects = createListOfObjectId(bodySale);
   const getAll = await getManySalesByIds(idObjects);
   if (getAll.length === 0) throw createMessage('Wrong product ID or invalid quantity');
+
   const { id } = await createSaleModel(bodySale);
   return {
     _id: id,
