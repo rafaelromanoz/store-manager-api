@@ -1,15 +1,22 @@
-const { getProductByIdModel } = require('../models/productModel');
-const { createSaleModel, findSaleByIdModel,
-  listAllSalesModel, updateSalesModel, deleteSaleModel } = require('../models/salesModel');
-const { createMessage } = require('../utils/functions');
+const { ObjectId } = require('mongodb');
+const { createSaleModel,
+  findSaleByIdModel,
+  listAllSalesModel,
+  updateSalesModel,
+  deleteSaleModel,
+  getManySalesByIds } = require('../models/salesModel');
+const { createMessage, createListOfObjectId } = require('../utils/functions');
 
 const createSaleService = async (bodySale) => {
-  const product = await getProductByIdModel(bodySale[0].productId);
-  const validateHex = /[0-9A-Fa-f]{6}/g;
-  if (!validateHex.test(bodySale[0].productId)
-  || typeof bodySale[0].quantity !== 'number'
-  || bodySale[0].quantity <= 0) throw createMessage('Wrong product ID or invalid quantity');
-  if (!product) throw createMessage('Wrong product ID or invalid quantity');
+  if (
+    bodySale.some(({ productId }) => !ObjectId.isValid(productId))
+  || bodySale.some(({ quantity }) => typeof quantity !== 'number')
+  || bodySale.some(({ quantity }) => quantity <= 0)) {
+    throw createMessage('Wrong product ID or invalid quantity');
+  }
+  const idObjects = createListOfObjectId(bodySale);
+  const getAll = await getManySalesByIds(idObjects);
+  if (getAll.length === 0) throw createMessage('Wrong product ID or invalid quantity');
   const { id } = await createSaleModel(bodySale);
   return {
     _id: id,
@@ -25,8 +32,7 @@ const listSaleServiceById = async (id) => {
     code: 'not_found',
     message: 'Sale not found',
   };
-  const validateHex = /[0-9A-Fa-f]{6}/g;
-  if (!validateHex.test(id)) throw error;
+  if (!ObjectId.isValid(id)) throw error;
   const sale = await findSaleByIdModel(id);
   if (!sale) throw error;
   return {
@@ -47,12 +53,15 @@ const listAllSalesService = async () => {
 };
 
 const updateSalesService = async (id, reqBody) => {
-  const product = await getProductByIdModel(reqBody[0].productId);
-  const validateHex = /[0-9A-Fa-f]{6}/g;
-  if (!validateHex.test(reqBody[0].productId)
-  || typeof reqBody[0].quantity !== 'number'
-  || reqBody[0].quantity <= 0) throw createMessage('Wrong product ID or invalid quantity');
-  if (!product) throw createMessage('Wrong product ID or invalid quantity');
+  if (
+    reqBody.some(({ productId }) => !ObjectId.isValid(productId))
+  || reqBody.some(({ quantity }) => typeof quantity !== 'number')
+  || reqBody.some(({ quantity }) => quantity <= 0)) {
+    throw createMessage('Wrong product ID or invalid quantity');
+  }
+  const idObjects = createListOfObjectId(reqBody);
+  const getAll = await getManySalesByIds(idObjects);
+  if (getAll.length === 0) throw createMessage('Wrong product ID or invalid quantity');
   await updateSalesModel(id, reqBody);
   return {
     _id: id,
@@ -63,8 +72,7 @@ const updateSalesService = async (id, reqBody) => {
 };
 
 const deleteSaleService = async (id) => {
-  const validateHex = /[0-9A-Fa-f]{6}/g;
-  if (!validateHex.test(id)) {
+  if (!ObjectId.isValid(id)) {
     throw createMessage('Wrong sale ID format');
   }
   const product = await findSaleByIdModel(id);

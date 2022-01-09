@@ -29,7 +29,7 @@ const getProductByIdController = async (req, res, next) => {
 
 const getAllProductsController = async (req, res, next) => {
   try {
-    const allProducts = await getAllProductsService();
+    const allProducts = await getAllProductsService(req.q);
   return res.status(200).json(allProducts);
   } catch (error) {
     console.error(error);

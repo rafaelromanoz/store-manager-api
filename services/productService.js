@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { bodySchema } = require('../schemas/schemas');
 const { createMessage } = require('../utils/functions');
 const {
@@ -23,9 +24,7 @@ const productCreateService = async (bodyProduct) => {
 };
 
 const getProductByIdService = async (id) => {
-  /** Source:  https://stackoverflow.com/questions/30051236/argument-passed-in-must-be-a-string-of-24-hex-characters-i-think-it-is */
-  const validateHex = /[0-9A-Fa-f]{6}/g;
-  if (!validateHex.test(id)) throw createMessage('Wrong id format');
+  if (!ObjectId.isValid(id)) throw createMessage('Wrong id format');
   const product = await getProductByIdModel(id);
   return product;
 };
@@ -50,9 +49,7 @@ const productUpdateService = async (idController, bodyProduct) => {
 };
 
 const productDeleteService = async (id) => {
-  /** Source:  https://stackoverflow.com/questions/30051236/argument-passed-in-must-be-a-string-of-24-hex-characters-i-think-it-is */
-  const validateHex = /[0-9A-Fa-f]{6}/g;
-  if (!validateHex.test(id)) throw createMessage('Wrong id format');
+  if (!ObjectId.isValid(id)) throw createMessage('Wrong id format');
   const product = await getProductByIdModel(id);
   await deleteProductModel(id);
   return product;

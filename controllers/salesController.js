@@ -7,7 +7,7 @@ const { createSaleService,
 
 const createSaleController = async (req, res, next) => {
   try {
-    const sale = await createSaleService(req.body);
+    const sale = await createSaleService(req.body, req.q);
     return res.status(200).json(sale);
   } catch (error) {
     console.error(error);
