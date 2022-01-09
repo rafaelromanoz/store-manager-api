@@ -1,4 +1,6 @@
 const Joi = require('joi');
+const { ObjectId } = require('mongodb');
+const { createMessage } = require('../utils/functions');
 
 const bodySchema = Joi.object({
   name: Joi.string().min(5).required().messages({
@@ -10,6 +12,16 @@ const bodySchema = Joi.object({
   }),
 });
 
+const isValid = (array) => {
+  if (
+    array.some(({ productId }) => !ObjectId.isValid(productId))
+    || array.some(({ quantity }) => typeof quantity !== 'number')
+    || array.some(({ quantity }) => quantity <= 0)) {
+      throw createMessage('Wrong product ID or invalid quantity');
+    }
+};
+
 module.exports = {
   bodySchema,
+  isValid,
 };

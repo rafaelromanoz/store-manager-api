@@ -7,21 +7,8 @@ const { createSaleModel,
   getManySalesByIds } = require('../models/salesModel');
 const { getProductByIdModel } = require('../models/productModel');
 const { createMessage, createListOfObjectId } = require('../utils/functions');
-
-const errorCreate = {
-  notfound: true,
-  code: 'stock_problem',
-  message: 'Such amount is not permitted to sell',
-};
-
-const isValid = (array) => {
-  if (
-    array.some(({ productId }) => !ObjectId.isValid(productId))
-    || array.some(({ quantity }) => typeof quantity !== 'number')
-    || array.some(({ quantity }) => quantity <= 0)) {
-      throw createMessage('Wrong product ID or invalid quantity');
-    }
-};
+const { isValid } = require('../schemas/schemas');
+const { errorCreate, errorList } = require('../utils/messages');
 
 const createSaleService = async (bodySale) => {
   isValid(bodySale);
@@ -43,14 +30,9 @@ const createSaleService = async (bodySale) => {
 };
 
 const listSaleServiceById = async (id) => {
-  const error = {
-    notfound: true,
-    code: 'not_found',
-    message: 'Sale not found',
-  };
-  if (!ObjectId.isValid(id)) throw error;
+  if (!ObjectId.isValid(id)) throw errorList;
   const sale = await findSaleByIdModel(id);
-  if (!sale) throw error;
+  if (!sale) throw errorList;
   return {
     _id: sale.id,
     itensSold: [
@@ -69,12 +51,7 @@ const listAllSalesService = async () => {
 };
 
 const updateSalesService = async (id, reqBody) => {
-  if (
-    reqBody.some(({ productId }) => !ObjectId.isValid(productId))
-  || reqBody.some(({ quantity }) => typeof quantity !== 'number')
-  || reqBody.some(({ quantity }) => quantity <= 0)) {
-    throw createMessage('Wrong product ID or invalid quantity');
-  }
+  isValid(reqBody);
   const idObjects = createListOfObjectId(reqBody);
   const getAll = await getManySalesByIds(idObjects);
   if (getAll.length === 0) throw createMessage('Wrong product ID or invalid quantity');
