@@ -2,18 +2,18 @@ const { ObjectId } = require('mongodb');
 const { bodySchema } = require('../schemas/schemas');
 const { createMessage } = require('../utils/functions');
 const {
-  findProductModel,
   createProductModel,
   getProductByIdModel,
   getAllProductsModel,
   productUpdateModel,
   deleteProductModel,
+  findProductByNameModel,
 } = require('../models/productModel');
 
 const productCreateService = async (bodyProduct) => {
   const { error } = bodySchema.validate(bodyProduct);
   if (error) throw createMessage(error.message);
-  const nameExists = await findProductModel(bodyProduct.name);
+  const nameExists = await findProductByNameModel(bodyProduct.name);
   if (nameExists) throw createMessage('Product already exists');
   const { id } = await createProductModel(bodyProduct);
   return {

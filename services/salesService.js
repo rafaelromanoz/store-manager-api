@@ -51,6 +51,7 @@ const listAllSalesService = async () => {
 };
 
 const updateSalesService = async (id, reqBody) => {
+console.log('🚀 ~ file: salesService.js ~ line 54 ~ updateSalesService ~ reqBody', reqBody);
   isValid(reqBody);
   const idObjects = createListOfObjectId(reqBody);
   const getAll = await getManySalesByIds(idObjects);

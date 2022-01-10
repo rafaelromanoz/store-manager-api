@@ -13,12 +13,10 @@ const getManySalesByIds = async (listIds) => {
 const createSaleModel = async (newProduct) => {
   const conn = await connection();
   const idObjects = createListOfObjectId(newProduct);
-
   await conn.collection('products').updateOne({ _id: {
     $in: idObjects,
   } }, { $inc: { quantity: -newProduct[0].quantity } });
   const { insertedId } = await conn.collection('sales').insertOne({ itensSold: newProduct });
-
   return { id: insertedId };
 };
 

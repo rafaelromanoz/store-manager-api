@@ -7,7 +7,7 @@ const createProductModel = async ({ name, quantity }) => {
   return { id: insertedId };
 };
 
-const findProductModel = async (name) => {
+const findProductByNameModel = async (name) => {
   const conn = await connection();
   const product = await conn.collection('products').findOne({ name });
   return product;
@@ -21,9 +21,10 @@ const getProductByIdModel = async (id) => {
 
 const productUpdateModel = async (id, { name, quantity }) => {
   const conn = await connection();
-  await conn.collection('products').updateOne({ _id: ObjectId(id) }, {
+  const { result } = await conn.collection('products').updateOne({ _id: ObjectId(id) }, {
     $set: { name, quantity },
   });
+  return result;
 };
 
 const getAllProductsModel = async () => {
@@ -34,12 +35,13 @@ const getAllProductsModel = async () => {
 
 const deleteProductModel = async (id) => {
   const conn = await connection();
-  await conn.collection('products').deleteOne({ _id: ObjectId(id) });
+  const { result: { ok } } = await conn.collection('products').deleteOne({ _id: ObjectId(id) });
+  return ok;
 };
 
 module.exports = {
   createProductModel,
-  findProductModel,
+  findProductByNameModel,
   getProductByIdModel,
   getAllProductsModel,
   productUpdateModel,
