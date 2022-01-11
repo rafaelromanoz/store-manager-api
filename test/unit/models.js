@@ -3,7 +3,6 @@ const { expect } = require("chai");
 const { MongoClient } = require("mongodb");
 const { getConnection } = require("./mongoMockConnection");
 
-
 const ProductModel = require("../../models/productModel");
 const SaleModel = require("../../models/salesModel");
 
