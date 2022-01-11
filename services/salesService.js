@@ -6,9 +6,11 @@ const { createSaleModel,
   deleteSaleModel,
   getManySalesByIds } = require('../models/salesModel');
 const { getProductByIdModel } = require('../models/productModel');
-const { createMessage, createListOfObjectId } = require('../utils/functions');
+const { createListOfObjectId } = require('../utils/functions');
 const { isValid } = require('../schemas/schemas');
 const { errorCreate, errorList } = require('../utils/messages');
+
+const createMessage = (message) => ({ code: 'invalid_data', message });
 
 const createSaleService = async (bodySale) => {
   isValid(bodySale);
@@ -51,7 +53,6 @@ const listAllSalesService = async () => {
 };
 
 const updateSalesService = async (id, reqBody) => {
-console.log('🚀 ~ file: salesService.js ~ line 54 ~ updateSalesService ~ reqBody', reqBody);
   isValid(reqBody);
   const idObjects = createListOfObjectId(reqBody);
   const getAll = await getManySalesByIds(idObjects);
@@ -80,4 +81,5 @@ module.exports = {
   listAllSalesService,
   updateSalesService,
   deleteSaleService,
+  createMessage,
 };

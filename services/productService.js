@@ -40,7 +40,6 @@ const productUpdateService = async (idController, bodyProduct) => {
   const { error } = bodySchema.validate(bodyProduct);
   if (error) throw createMessage(error.message);
   await productUpdateModel(idController, bodyProduct);
-
   return {
     _id: idController,
     name: bodyProduct.name,
@@ -50,9 +49,7 @@ const productUpdateService = async (idController, bodyProduct) => {
 
 const productDeleteService = async (id) => {
   if (!ObjectId.isValid(id)) throw createMessage('Wrong id format');
-  const product = await getProductByIdModel(id);
   await deleteProductModel(id);
-  return product;
 };
 
 module.exports = {

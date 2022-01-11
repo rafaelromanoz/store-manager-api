@@ -44,10 +44,11 @@ const deleteSaleModel = async (id) => {
   const sale = await conn.collection('sales').findOne({ _id: ObjectId(id) });
   const itemId = sale.itensSold[0].productId;
   const quantOld = sale.itensSold[0].quantity;
-  await conn.collection('sales').deleteOne({ _id: ObjectId(id) });
+  const { ok } = await conn.collection('sales').deleteOne({ _id: ObjectId(id) });
   await conn.collection('products').updateOne({ _id: ObjectId(itemId) }, {
     $inc: { quantity: +quantOld },
   });
+  return ok;
 };
 
 module.exports = {
