@@ -2,7 +2,7 @@ const sinon = require("sinon");
 const { expect } = require("chai");
 const { MongoClient } = require("mongodb");
 const { getConnection } = require("./mongoMockConnection");
-const { ObjectId } = require("mongodb");
+
 
 const ProductModel = require("../../models/productModel");
 const SaleModel = require("../../models/salesModel");

@@ -19,6 +19,7 @@ const isValid = (array) => {
     || array.some(({ quantity }) => quantity <= 0)) {
       throw createMessage('Wrong product ID or invalid quantity');
     }
+    return true;
 };
 
 module.exports = {
