@@ -9,6 +9,7 @@ const {
 const productCreateController = async (req, res, next) => {
   try {
     const product = await productCreateService(req.body);
+    console.log('🚀 ~ file: productController.js ~ line 12 ~ productCreateController ~ product', product);
     return res.status(201).json(product);
   } catch (error) {
     console.error(error);
@@ -30,7 +31,7 @@ const getProductByIdController = async (req, res, next) => {
 const getAllProductsController = async (req, res, next) => {
   try {
     const allProducts = await getAllProductsService(req.q);
-  return res.status(200).json(allProducts);
+    return res.status(200).json(allProducts);
   } catch (error) {
     console.error(error);
     next(error);

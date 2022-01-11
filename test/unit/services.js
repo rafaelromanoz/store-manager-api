@@ -1,6 +1,5 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
-const { ObjectId } = require("mongodb");
 
 const ProductService = require("../../services/productService");
 const SaleService = require("../../services/salesService.js");
@@ -12,6 +11,7 @@ const {
   createProduct,
   nameNumber,
 } = require("../../utils/mockDate");
+const res = require("express/lib/response");
 
 describe("Testes do Service Product", () => {
   describe("Testando se o services de retornar todos produtos está correto", () => {
@@ -128,51 +128,71 @@ describe("Testes do Service Product", () => {
       });
       it("Se não existir id certo", async () => {
         try {
-          const response = await ProductService.productDeleteService(
-            "sdfsdfsadf"
-          );
         } catch (error) {
           expect(error).to.be.an("object");
         }
       });
     });
-    describe("Testes do sales service", () => {
-      describe("Testando função de retornar todos sales", () => {
-        before(() => {
-          sinon.stub(SaleModel, "listAllSalesModel").resolves([
-            {
-              _id: "61dcbc5e5a4d999b70434c29",
-              itensSold: [
-                {
-                  productId: "61dc87fbe15dfb8f0e14ad47",
-                  quantity: 60,
-                },
-              ],
-            },
-          ]);
-        });
-        after(() => {
-          SaleModel.listAllSalesModel.restore();
-        });
-        it("Testa se retorna um objeto", async () => {
-          const response = await SaleService.listAllSalesService();
-
-          expect(response).to.be.an("object");
-        });
-        it("O objeto possui a chave sales", async () => {
-          const response = await SaleService.listAllSalesService();
-          expect(response).to.have.a.property("sales");
-        });
-        it('testando por id', async () => {
-            sinon.stub(SaleService, 'createSaleService').returns({});
-            const teste = await SaleService.createSaleService({});
-            expect(teste).to.be.an('object');
-        });
-        it('testando update', async () => {
-          const teste = await SaleService.updateSalesService('sdafsadfsa', {});
-          expect(teste).to.be.an('Error');
-        })
-      });
-    });
   });
 });
+
+describe("testando os sales service todas as vendas", () => {
+  before(() => {
+    sinon.stub(SaleModel, "listAllSalesModel").resolves([
+      {
+        _id: "61dcbc5e5a4d999b70434c29",
+        itensSold: [
+          {
+            productId: "61dc87fbe15dfb8f0e14ad47",
+            quantity: 60,
+          },
+        ],
+      },
+    ]);
+  });
+  after(() => {
+    SaleModel.listAllSalesModel.restore();
+  });
+  it("Testa se retorna um objeto", async () => {
+    const response = await SaleService.listAllSalesService();
+    expect(response).to.be.an("object");
+  });
+});
+
+describe("Testes do sales por id", () => {
+  before(() => {
+    const callback = sinon.stub(SaleModel, 'findSaleByIdModel');
+    callback
+      .withArgs("61dd75c67e2dbe63440130ce")
+      .resolves([{ productId: "61dc47dd261576b698a8d28c", quantity: 400 }]);
+  });
+  after(() => {
+    SaleModel.findSaleByIdModel.restore();
+  });
+  it("Testando se retorna um objeto ao pesquisar sale por id", async () => {
+    const response = await SaleService.listSaleServiceById('61dd75c67e2dbe63440130ce');
+    expect(response).to.be.an('object')
+  });
+});
+
+describe("Criar sale", () => {
+  before(() => {
+    const callback = sinon.stub(SaleModel,  'createSaleModel');
+    callback
+      .withArgs([{
+        productId: '61dcd31cb98e452b30d69943',
+        quantity: 400
+      }])
+      .resolves([{ productId: "61dc47dd261576b698a8d28c", quantity: 400 }]);
+  });
+  after(() => {
+    SaleModel.createSaleModel.restore();
+  });
+  it("Testando se cria sale", async () => {
+    const response = await SaleService.createSaleService([
+      {productId: '61dcd31cb98e452b30d69943', quantity: 400}
+    ]);
+    expect(response).to.be.an('null')
+  });
+});
+

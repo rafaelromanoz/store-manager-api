@@ -4,9 +4,10 @@ const { createSaleModel,
   listAllSalesModel,
   updateSalesModel,
   deleteSaleModel,
-  getManySalesByIds } = require('../models/salesModel');
+  getManySalesByIds,
+} = require('../models/salesModel');
 const { getProductByIdModel } = require('../models/productModel');
-const { createListOfObjectId, createMessage } = require('../utils/functions');
+const { createMessage, createListOfObjectId } = require('../utils/functions');
 const { isValid } = require('../schemas/schemas');
 const { errorCreate, errorList } = require('../utils/messages');
 
