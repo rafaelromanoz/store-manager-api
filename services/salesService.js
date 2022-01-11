@@ -6,11 +6,9 @@ const { createSaleModel,
   deleteSaleModel,
   getManySalesByIds } = require('../models/salesModel');
 const { getProductByIdModel } = require('../models/productModel');
-const { createListOfObjectId } = require('../utils/functions');
+const { createListOfObjectId, createMessage } = require('../utils/functions');
 const { isValid } = require('../schemas/schemas');
 const { errorCreate, errorList } = require('../utils/messages');
-
-const createMessage = (message) => ({ code: 'invalid_data', message });
 
 const createSaleService = async (bodySale) => {
   isValid(bodySale);
@@ -81,5 +79,4 @@ module.exports = {
   listAllSalesService,
   updateSalesService,
   deleteSaleService,
-  createMessage,
 };
