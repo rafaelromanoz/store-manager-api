@@ -9,7 +9,6 @@ const {
 const productCreateController = async (req, res, next) => {
   try {
     const product = await productCreateService(req.body);
-    console.log('🚀 ~ file: productController.js ~ line 12 ~ productCreateController ~ product', product);
     return res.status(201).json(product);
   } catch (error) {
     console.error(error);
